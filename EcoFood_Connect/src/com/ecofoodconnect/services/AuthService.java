@@ -4,6 +4,7 @@
  */
 package com.ecofoodconnect.services;
 
+import com.ecofoodconnect.config.AppConfig;
 import com.ecofoodconnect.models.DonationRequest;
 import com.ecofoodconnect.models.DonationRequestDirectory;
 import com.ecofoodconnect.models.EnterprisePerson;
@@ -11,6 +12,10 @@ import com.ecofoodconnect.models.LogisticsRequest;
 import com.ecofoodconnect.models.LogisticsRequestDirectory;
 import com.ecofoodconnect.models.Person;
 import com.ecofoodconnect.models.PersonDirectory;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,107 +39,125 @@ public class AuthService {
     private static final Map<String, ArrayList<String>> pendingTasks = new HashMap<>();
     private static final Map<String, ArrayList<String>> completedOperations = new HashMap<>();
 
-    static {
-        // Pre-populate with demo data
-        // System Admins
-        personDirectory.addPerson(new Person("1", "Admin One", "sysadmin1", "password123", "SystemAdmin"));
-        personDirectory.addPerson(new Person("2", "Admin Two", "sysadmin2", "password123", "SystemAdmin"));
-        personDirectory.addPerson(new Person("3", "Admin Three", "sysadmin3", "password123", "SystemAdmin"));
-        
-        // Restaurants
-        personDirectory.addPerson(new EnterprisePerson("4", "Restaurant Admin", "restadmin1", "password123", "EnterpriseAdmin", "Restaurants"));
-        personDirectory.addPerson(new EnterprisePerson("5", "Restaurant Manager One", "restmgr1", "password123", "RestaurantManager", "Restaurants"));
-        personDirectory.addPerson(new EnterprisePerson("6", "Restaurant Manager Two", "restmgr2", "password123", "RestaurantManager", "Restaurants"));
-        personDirectory.addPerson(new EnterprisePerson("7", "Restaurant Manager Three", "restmgr3", "password123", "RestaurantManager", "Restaurants"));
-
-        // Food Banks
-        personDirectory.addPerson(new EnterprisePerson("8", "Food Bank Admin", "fbadmin1", "password123", "EnterpriseAdmin", "FoodBanks"));
-        personDirectory.addPerson(new EnterprisePerson("9", "Food Bank Manager One", "fbmgr1", "password123", "FoodBankManager", "FoodBanks"));
-        personDirectory.addPerson(new EnterprisePerson("10", "Food Bank Manager Two", "fbmgr2", "password123", "FoodBankManager", "FoodBanks"));
-        personDirectory.addPerson(new EnterprisePerson("11", "Food Bank Manager Three", "fbmgr3", "password123", "FoodBankManager", "FoodBanks"));
-        
-        // Logistics Providers
-        personDirectory.addPerson(new EnterprisePerson("12", "Logistics Admin", "logadmin1", "password123", "EnterpriseAdmin", "LogisticsProviders"));
-        personDirectory.addPerson(new EnterprisePerson("13", "Logistics Coordinator One", "logcoord1", "password123", "LogisticsCoordinator", "LogisticsProviders"));
-        personDirectory.addPerson(new EnterprisePerson("14", "Logistics Coordinator Two", "logcoord2", "password123", "LogisticsCoordinator", "LogisticsProviders"));
-        personDirectory.addPerson(new EnterprisePerson("15", "Logistics Coordinator Three", "logcoord3", "password123", "LogisticsCoordinator", "LogisticsProviders"));
-
-        // Waste Management Firms
-        personDirectory.addPerson(new EnterprisePerson("16", "Waste Management Admin", "wmadmin1", "password123", "EnterpriseAdmin", "WasteManagementFirms"));
-        personDirectory.addPerson(new EnterprisePerson("17", "Waste Manager One", "wastemgr1", "password123", "WasteManagementOperator", "WasteManagementFirms"));
-        personDirectory.addPerson(new EnterprisePerson("18", "Waste Manager Two", "wastemgr2", "password123", "WasteManagementOperator", "WasteManagementFirms"));
-        personDirectory.addPerson(new EnterprisePerson("19", "Waste Manager Three", "wastemgr3", "password123", "WasteManagementOperator", "WasteManagementFirms"));
-        
-        // Quality Inspectors
-        personDirectory.addPerson(new Person("20", "Quality Inspector One", "qualinsp1", "password123", "QualityInspector"));
-        personDirectory.addPerson(new Person("21", "Quality Inspector Two", "qualinsp2", "password123", "QualityInspector"));
-        personDirectory.addPerson(new Person("22", "Quality Inspector Three", "qualinsp3", "password123", "QualityInspector"));
-        
-
-        // End Users
-        personDirectory.addPerson(new Person("23", "End User One", "enduser1", "password123", "EndUser"));
-        personDirectory.addPerson(new Person("24", "End User Two", "enduser2", "password123", "EndUser"));
-        personDirectory.addPerson(new Person("25", "End User Three", "enduser3", "password123", "EndUser"));
-
-        // Add Pending Tasks
-        pendingTasks.put("Restaurants", new ArrayList<>(List.of(
-                "Donation request for 50 meals",
-                "Urgent surplus redistribution request",
-                "Request for pickup scheduling")));
-        pendingTasks.put("FoodBanks", new ArrayList<>(List.of(
-                "Request for redistribution approval",
-                "Pending stock verification")));
-        pendingTasks.put("LogisticsProviders", new ArrayList<>(List.of(
-                "Assign driver for route A",
-                "Schedule pickup from Restaurant X")));
-        pendingTasks.put("WasteManagementFirms", new ArrayList<>(List.of(
-                "Disposal request for 100 kg of waste",
-                "Schedule non-edible waste processing")));
-
-        // Add Completed Operations
-        completedOperations.put("Restaurants", new ArrayList<>(List.of(
-                "50 meals donated to Food Bank A",
-                "Urgent surplus delivered to Shelter B")));
-        completedOperations.put("FoodBanks", new ArrayList<>(List.of(
-                "Redistribution of 200 meals completed",
-                "Excess stock delivered to Shelter C")));
-        completedOperations.put("LogisticsProviders", new ArrayList<>(List.of(
-                "Route A delivery completed",
-                "Pickup from Restaurant Y completed")));
-        completedOperations.put("WasteManagementFirms", new ArrayList<>(List.of(
-                "100 kg waste processed sustainably",
-                "Non-edible waste disposed of")));
-        
-        populateDonationsDemoData();
-        
-        
-        logisticsRequestDirectory = new LogisticsRequestDirectory();
-
-        // Add demo data: 20 logistics requests
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ001", "Driver A", "12/01/2024", "10:00 AM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ002", "Driver B", "12/02/2024", "02:00 PM", "In Transit"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ003", "Driver C", "12/03/2024", "09:30 AM", "Completed"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ004", "Driver A", "12/04/2024", "01:00 PM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ005", "Driver B", "12/05/2024", "03:45 PM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ006", "Driver C", "12/06/2024", "11:00 AM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ007", "Driver A", "12/07/2024", "08:00 AM", "In Transit"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ008", "Driver B", "12/08/2024", "12:15 PM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ009", "Driver C", "12/09/2024", "04:00 PM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ010", "Driver A", "12/10/2024", "05:30 PM", "Completed"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ011", "Driver B", "12/11/2024", "10:45 AM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ012", "Driver C", "12/12/2024", "01:30 PM", "In Transit"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ013", "Driver A", "12/13/2024", "03:00 PM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ014", "Driver B", "12/14/2024", "07:00 AM", "Completed"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ015", "Driver C", "12/15/2024", "02:15 PM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ016", "Driver A", "12/16/2024", "09:30 AM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ017", "Driver B", "12/17/2024", "11:45 AM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ018", "Driver C", "12/18/2024", "10:00 AM", "In Transit"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ019", "Driver A", "12/19/2024", "03:15 PM", "Scheduled"));
-        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ020", "Driver B", "12/20/2024", "04:30 PM", "Scheduled"));
-
-    }
+//    static {
+//        // Pre-populate with demo data
+//        // System Admins
+//        personDirectory.addPerson(new Person("1", "Admin One", "sysadmin1", "password123", "SystemAdmin"));
+//        personDirectory.addPerson(new Person("2", "Admin Two", "sysadmin2", "password123", "SystemAdmin"));
+//        personDirectory.addPerson(new Person("3", "Admin Three", "sysadmin3", "password123", "SystemAdmin"));
+//        
+//        // Restaurants
+//        personDirectory.addPerson(new EnterprisePerson("4", "Restaurant Admin", "restadmin1", "password123", "EnterpriseAdmin", "Restaurants"));
+//        personDirectory.addPerson(new EnterprisePerson("5", "Restaurant Manager One", "restmgr1", "password123", "RestaurantManager", "Restaurants"));
+//        personDirectory.addPerson(new EnterprisePerson("6", "Restaurant Manager Two", "restmgr2", "password123", "RestaurantManager", "Restaurants"));
+//        personDirectory.addPerson(new EnterprisePerson("7", "Restaurant Manager Three", "restmgr3", "password123", "RestaurantManager", "Restaurants"));
+//
+//        // Food Banks
+//        personDirectory.addPerson(new EnterprisePerson("8", "Food Bank Admin", "fbadmin1", "password123", "EnterpriseAdmin", "FoodBanks"));
+//        personDirectory.addPerson(new EnterprisePerson("9", "Food Bank Manager One", "fbmgr1", "password123", "FoodBankManager", "FoodBanks"));
+//        personDirectory.addPerson(new EnterprisePerson("10", "Food Bank Manager Two", "fbmgr2", "password123", "FoodBankManager", "FoodBanks"));
+//        personDirectory.addPerson(new EnterprisePerson("11", "Food Bank Manager Three", "fbmgr3", "password123", "FoodBankManager", "FoodBanks"));
+//        
+//        // Logistics Providers
+//        personDirectory.addPerson(new EnterprisePerson("12", "Logistics Admin", "logadmin1", "password123", "EnterpriseAdmin", "LogisticsProviders"));
+//        personDirectory.addPerson(new EnterprisePerson("13", "Logistics Coordinator One", "logcoord1", "password123", "LogisticsCoordinator", "LogisticsProviders"));
+//        personDirectory.addPerson(new EnterprisePerson("14", "Logistics Coordinator Two", "logcoord2", "password123", "LogisticsCoordinator", "LogisticsProviders"));
+//        personDirectory.addPerson(new EnterprisePerson("15", "Logistics Coordinator Three", "logcoord3", "password123", "LogisticsCoordinator", "LogisticsProviders"));
+//
+//        // Waste Management Firms
+//        personDirectory.addPerson(new EnterprisePerson("16", "Waste Management Admin", "wmadmin1", "password123", "EnterpriseAdmin", "WasteManagementFirms"));
+//        personDirectory.addPerson(new EnterprisePerson("17", "Waste Manager One", "wastemgr1", "password123", "WasteManagementOperator", "WasteManagementFirms"));
+//        personDirectory.addPerson(new EnterprisePerson("18", "Waste Manager Two", "wastemgr2", "password123", "WasteManagementOperator", "WasteManagementFirms"));
+//        personDirectory.addPerson(new EnterprisePerson("19", "Waste Manager Three", "wastemgr3", "password123", "WasteManagementOperator", "WasteManagementFirms"));
+//        
+//        // Quality Inspectors
+//        personDirectory.addPerson(new Person("20", "Quality Inspector One", "qualinsp1", "password123", "QualityInspector"));
+//        personDirectory.addPerson(new Person("21", "Quality Inspector Two", "qualinsp2", "password123", "QualityInspector"));
+//        personDirectory.addPerson(new Person("22", "Quality Inspector Three", "qualinsp3", "password123", "QualityInspector"));
+//        
+//
+//        // End Users
+//        personDirectory.addPerson(new Person("23", "End User One", "enduser1", "password123", "EndUser"));
+//        personDirectory.addPerson(new Person("24", "End User Two", "enduser2", "password123", "EndUser"));
+//        personDirectory.addPerson(new Person("25", "End User Three", "enduser3", "password123", "EndUser"));
+//
+//        // Add Pending Tasks
+//        pendingTasks.put("Restaurants", new ArrayList<>(List.of(
+//                "Donation request for 50 meals",
+//                "Urgent surplus redistribution request",
+//                "Request for pickup scheduling")));
+//        pendingTasks.put("FoodBanks", new ArrayList<>(List.of(
+//                "Request for redistribution approval",
+//                "Pending stock verification")));
+//        pendingTasks.put("LogisticsProviders", new ArrayList<>(List.of(
+//                "Assign driver for route A",
+//                "Schedule pickup from Restaurant X")));
+//        pendingTasks.put("WasteManagementFirms", new ArrayList<>(List.of(
+//                "Disposal request for 100 kg of waste",
+//                "Schedule non-edible waste processing")));
+//
+//        // Add Completed Operations
+//        completedOperations.put("Restaurants", new ArrayList<>(List.of(
+//                "50 meals donated to Food Bank A",
+//                "Urgent surplus delivered to Shelter B")));
+//        completedOperations.put("FoodBanks", new ArrayList<>(List.of(
+//                "Redistribution of 200 meals completed",
+//                "Excess stock delivered to Shelter C")));
+//        completedOperations.put("LogisticsProviders", new ArrayList<>(List.of(
+//                "Route A delivery completed",
+//                "Pickup from Restaurant Y completed")));
+//        completedOperations.put("WasteManagementFirms", new ArrayList<>(List.of(
+//                "100 kg waste processed sustainably",
+//                "Non-edible waste disposed of")));
+//        
+//        populateDonationsDemoData();
+//        
+//        
+//        logisticsRequestDirectory = new LogisticsRequestDirectory();
+//
+//        // Add demo data: 20 logistics requests
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ001", "Driver A", "12/01/2024", "10:00 AM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ002", "Driver B", "12/02/2024", "02:00 PM", "In Transit"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ003", "Driver C", "12/03/2024", "09:30 AM", "Completed"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ004", "Driver A", "12/04/2024", "01:00 PM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ005", "Driver B", "12/05/2024", "03:45 PM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ006", "Driver C", "12/06/2024", "11:00 AM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ007", "Driver A", "12/07/2024", "08:00 AM", "In Transit"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ008", "Driver B", "12/08/2024", "12:15 PM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ009", "Driver C", "12/09/2024", "04:00 PM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ010", "Driver A", "12/10/2024", "05:30 PM", "Completed"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ011", "Driver B", "12/11/2024", "10:45 AM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ012", "Driver C", "12/12/2024", "01:30 PM", "In Transit"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ013", "Driver A", "12/13/2024", "03:00 PM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ014", "Driver B", "12/14/2024", "07:00 AM", "Completed"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ015", "Driver C", "12/15/2024", "02:15 PM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ016", "Driver A", "12/16/2024", "09:30 AM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ017", "Driver B", "12/17/2024", "11:45 AM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ018", "Driver C", "12/18/2024", "10:00 AM", "In Transit"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ019", "Driver A", "12/19/2024", "03:15 PM", "Scheduled"));
+//        logisticsRequestDirectory.addRequest(new LogisticsRequest("REQ020", "Driver B", "12/20/2024", "04:30 PM", "Scheduled"));
+//
+//    }
     
     public static LogisticsRequestDirectory getLogisticsRequestDirectory() {
+        LogisticsRequestDirectory logisticsRequestDirectory = new LogisticsRequestDirectory();
+        try (Connection conn = AppConfig.getConnection()) {
+            String query = "SELECT * FROM LogisticsRequest";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String driver = rs.getString("driver");
+                String pickupDate = rs.getString("pickup_date");
+                String pickupTime = rs.getString("pickup_time");
+                String status = rs.getString("status");
+
+                logisticsRequestDirectory.addRequest(new LogisticsRequest(id, driver, pickupDate, pickupTime, status));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return logisticsRequestDirectory;
     }
     
@@ -185,12 +208,77 @@ public class AuthService {
     }
 
     // Authenticate user by username and password
-    public static Person authenticate(String username, String password) {
-        Person user = personDirectory.authenticate(username, password);
-        if (user != null) {
-            setCurrentUser(user); // Track logged-in user
+//    public static Person authenticate(String username, String password) {
+//        Person user = personDirectory.authenticate(username, password);
+//        if (user != null) {
+//            setCurrentUser(user); // Track logged-in user
+//        }
+//        return user;
+//    }
+    
+    private static String getEnterpriseType(String personId) {
+        try (Connection conn = AppConfig.getConnection()) {
+            String query = "SELECT enterprise_type FROM EnterprisePerson WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, personId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("enterprise_type");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return user;
+        return null;
+    }
+    
+    public static Person authenticate(String username, String password) {
+        try (Connection conn = AppConfig.getConnection()) {
+            String query = "SELECT * FROM Person WHERE username = ? AND password = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String role = rs.getString("role");
+
+                if ("EnterpriseAdmin".equals(role) || "RestaurantManager".equals(role)) {
+                    return new EnterprisePerson(id, name, username, password, role, getEnterpriseType(id));
+                } else {
+                    return new Person(id, name, username, password, role);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public static ArrayList<DonationRequest> getAllDonationRequests() {
+        ArrayList<DonationRequest> requests = new ArrayList<>();
+        try (Connection conn = AppConfig.getConnection()) {
+            String query = "SELECT * FROM DonationRequest";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String foodType = rs.getString("food_type");
+                double quantity = rs.getDouble("quantity");
+                String expiryDate = rs.getString("expiry_date");
+                String notes = rs.getString("notes");
+                String status = rs.getString("status");
+                String createdBy = rs.getString("created_by");
+
+                requests.add(new DonationRequest(id, foodType, quantity, expiryDate, notes, status, createdBy));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return requests;
     }
 
     // Register a new user
@@ -222,8 +310,42 @@ public class AuthService {
     }
 
     // Get all users
+//    public static ArrayList<Person> getAllUsers() {
+//        return personDirectory.getAllPersons();
+//    }
+    
     public static ArrayList<Person> getAllUsers() {
-        return personDirectory.getAllPersons();
+        ArrayList<Person> users = new ArrayList<>();
+        try (Connection conn = AppConfig.getConnection()) {
+            String query = "SELECT * FROM Person";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String role = rs.getString("role");
+
+                if (role.equals("EnterpriseAdmin") || role.equals("RestaurantManager") || role.equals("FoodBankManager")) {
+                    String enterpriseTypeQuery = "SELECT enterprise_type FROM EnterprisePerson WHERE id = ?";
+                    PreparedStatement enterpriseStmt = conn.prepareStatement(enterpriseTypeQuery);
+                    enterpriseStmt.setString(1, id);
+                    ResultSet enterpriseRs = enterpriseStmt.executeQuery();
+
+                    if (enterpriseRs.next()) {
+                        String enterpriseType = enterpriseRs.getString("enterprise_type");
+                        users.add(new EnterprisePerson(id, name, username, password, role, enterpriseType));
+                    }
+                } else {
+                    users.add(new Person(id, name, username, password, role));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return users;
     }
     
     public static ArrayList<Person> getUsersByEnterpriseType(String enterpriseType) {
@@ -327,11 +449,49 @@ public class AuthService {
                "4. System health check passed at 10:30 AM";
     }
     
+//    public static ArrayList<String> getPendingTasks(String enterpriseType) {
+//        return pendingTasks.getOrDefault(enterpriseType, new ArrayList<>());
+//    }
+//
+//    public static ArrayList<String> getCompletedOperations(String enterpriseType) {
+//        return completedOperations.getOrDefault(enterpriseType, new ArrayList<>());
+//    }
+    
     public static ArrayList<String> getPendingTasks(String enterpriseType) {
-        return pendingTasks.getOrDefault(enterpriseType, new ArrayList<>());
+        ArrayList<String> tasks = new ArrayList<>();
+        try (Connection conn = AppConfig.getConnection()) {
+            String query = "SELECT task FROM PendingTasks WHERE enterprise_type = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, enterpriseType);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                tasks.add(rs.getString("task"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tasks;
     }
 
+    /**
+     * Get completed operations for an enterprise type.
+     */
     public static ArrayList<String> getCompletedOperations(String enterpriseType) {
-        return completedOperations.getOrDefault(enterpriseType, new ArrayList<>());
+        ArrayList<String> operations = new ArrayList<>();
+        try (Connection conn = AppConfig.getConnection()) {
+            String query = "SELECT operation FROM CompletedOperations WHERE enterprise_type = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, enterpriseType);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                operations.add(rs.getString("operation"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return operations;
     }
+
 }
