@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1">
-        <file>
-            <url>src/com/ecofoodconnect/ui/restaurantManager/CreateDonationRequestPanel.java</url>
-            <bookmark id="1">
-                <name/>
-                <line>103</line>
-                <key/>
-            </bookmark>
-        </file>
-    </editor-bookmarks>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/models/Person.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/models/FoodBankManager.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/models/DonationRequest.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/ui/EnterpriseAdminDashboard.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/services/AuthService.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/ui/restaurantManager/ViewDonationRequestsPanel.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/models/PersonDirectory.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/Main.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/ui/EndUserDashboard.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/ui/enterpriseAdmin/EnterpriseOperationsPanel.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/models/DonationRequestDirectory.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/ui/FoodBankManagerDashboard.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/ui/enterpriseAdmin/RoleAssignmentPanel.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/models/EnterprisePerson.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/ui/enterpriseAdmin/EnterpriseConfigPanel.java</file>
+            <file>file:/Users/tanmay/Desktop/AED_Final_Project/EcooFood_Connect/src/com/ecofoodconnect/ui/restaurantManager/CreateDonationRequestPanel.java</file>
+        </group>
+    </open-files>
 </project-private>

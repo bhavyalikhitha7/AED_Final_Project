@@ -173,6 +173,13 @@ public class AuthService {
         currentUser = user;
     }
     
+    public static String getEnterpriseTypeOfCurrentUser() {
+        if (currentUser instanceof EnterprisePerson) {
+            return ((EnterprisePerson) currentUser).getEnterpriseType();
+        }
+        return null; // Non-enterprise users won't have an enterprise type
+    }
+    
     public static DonationRequestDirectory getDonationRequestDirectory() {
         return donationRequestDirectory;
     }
