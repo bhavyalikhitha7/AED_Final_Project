@@ -4,6 +4,7 @@
  */
 package com.ecofoodconnect;
 
+import com.ecofoodconnect.ui.LoginScreen;
 import javax.swing.SwingUtilities;
 
 /**
@@ -13,7 +14,7 @@ import javax.swing.SwingUtilities;
 public class Main {
     public static void main(String[] args) {
         // Initialize application configuration
-        AppConfig.initialize();
+//        AppConfig.initialize();
 
         // Ensure UI is initialized on the Event Dispatch Thread
         SwingUtilities.invokeLater(() -> {
