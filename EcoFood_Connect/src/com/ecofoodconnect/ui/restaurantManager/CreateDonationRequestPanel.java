@@ -10,6 +10,7 @@ import com.ecofoodconnect.services.AuthService;
 import com.ecofoodconnect.utils.DateValidator;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -101,11 +102,11 @@ public class CreateDonationRequestPanel {
 
         // Buttons
         JButton submitButton = new JButton("Submit");
-        submitButton.setBackground(new Color(34, 139, 34)); // Forest Green color
-        submitButton.setOpaque(true); // Ensure it's opaque
-        submitButton.setContentAreaFilled(false); // Optional
-        submitButton.setForeground(Color.WHITE); 
-        
+        submitButton.setBackground( new Color(34, 139, 34));
+            submitButton.setForeground(Color.WHITE);
+            submitButton.setPreferredSize(new Dimension(100, 30)); 
+            submitButton.setBorder(null);
+       
         submitButton.addActionListener(e -> {
             String foodType = (String) foodTypeDropdown.getSelectedItem();
             String quantityStr = quantityField.getText();
@@ -160,17 +161,18 @@ public class CreateDonationRequestPanel {
         
         JButton resetButton = new JButton("Reset");
          resetButton.setBackground(Color.RED);
-         resetButton.setBackground(new Color(34, 139, 34)); // Forest Green color
-        resetButton.setOpaque(true); // Ensure it's opaque
-       resetButton.setContentAreaFilled(false); // Optional
-        resetButton.setForeground(Color.WHITE); 
+resetButton.setForeground(Color.WHITE);
+resetButton.setPreferredSize(new Dimension(100, 30));
+resetButton.setBorder(null);
         resetButton.addActionListener(e -> {
             foodTypeDropdown.setSelectedIndex(0);
             quantityField.setText("");
             expiryDateField.setText("MM/DD/YYYY");
             notesField.setText("");
         });
-
+Font buttonFont = new Font("Arial", Font.BOLD, 13); // Font: Arial, Bold, Size: 13
+submitButton.setFont(buttonFont);
+resetButton.setFont(buttonFont);
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(submitButton);
         buttonPanel.add(resetButton);
