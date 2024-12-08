@@ -36,12 +36,15 @@ public class ActionButtonEditor extends AbstractCellEditor implements TableCellE
         approveButton.setBackground(new Color(50, 205, 50));
         approveButton.setForeground(Color.WHITE);
         approveButton.setFont(new Font("Arial", Font.BOLD, 14));
+        approveButton.setPreferredSize(new Dimension(150, 30)); 
+
         approveButton.setFocusPainted(false);
 
         // Style reject button
         rejectButton.setBackground(Color.RED);
         rejectButton.setForeground(Color.WHITE);
         rejectButton.setFont(new Font("Arial", Font.BOLD, 14));
+        rejectButton.setPreferredSize(new Dimension(100, 30)); 
         rejectButton.setFocusPainted(false);
 
         // Style placeholder label
