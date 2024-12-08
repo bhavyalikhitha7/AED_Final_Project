@@ -8,6 +8,7 @@ import com.ecofoodconnect.models.Person;
 import com.ecofoodconnect.services.AuthService;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -203,19 +204,37 @@ public class LoginScreen extends javax.swing.JFrame {
         formPanel.setBackground(Color.WHITE);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 15, 15, 15);
-
+        Font labelFont = new Font("Arial", Font.BOLD, 16);
+        
         JLabel usernameLabel = new JLabel("Username:");
         JTextField usernameField = new JTextField(20);
 
         JLabel passwordLabel = new JLabel("Password:");
         JPasswordField passwordField = new JPasswordField(20);
+        
+        usernameLabel.setFont(labelFont);
+        passwordLabel.setFont(labelFont);
 
         JButton loginButton = new JButton("Login");
-        loginButton.setBackground(new Color(0, 102, 204));
+//        loginButton.setBackground(new Color(0, 102, 204));
+loginButton.setBackground(new Color(0, 153, 51));
         loginButton.setForeground(Color.WHITE);
 
         JButton registerButton = new JButton("Register");
-        registerButton.setBackground(Color.LIGHT_GRAY);
+//        registerButton.setBackground(Color.LIGHT_GRAY);
+registerButton.setBackground(new Color(255, 102, 102));
+registerButton.setForeground(Color.WHITE);
+
+loginButton.setPreferredSize(new Dimension(100, 30)); // Width: 150px, Height: 40px
+registerButton.setPreferredSize(new Dimension(120, 30)); // Same as above
+Font buttonFont = new Font("Arial", Font.BOLD, 14); // Font: Arial, Bold, Size: 18
+loginButton.setFont(buttonFont);
+registerButton.setFont(buttonFont);
+loginButton.setBorder(null); // Remove border
+registerButton.setBorder(null); // Remove border
+
+
+
 
         // Add components to form
         gbc.gridx = 0;
