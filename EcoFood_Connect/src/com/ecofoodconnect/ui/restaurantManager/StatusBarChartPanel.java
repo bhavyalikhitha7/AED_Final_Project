@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.Map;
 /**
  *
- * @author tanmay
+ * @author Bhavya
  */
 public class StatusBarChartPanel extends JPanel {
     private Map<String, Long> data;
@@ -46,30 +46,32 @@ public class StatusBarChartPanel extends JPanel {
         g2d.setColor(new Color(200, 200, 200));
         long maxValue = data.values().stream().mapToLong(Long::longValue).max().orElse(1);
 
-        for (int i = 0; i <= 10; i++) {
-            int gridY = y + (chartHeight * i / 10);
+        for (int i = 0; i <= maxValue; i++) {
+            int gridY = y + (chartHeight * (int)(maxValue - i) / (int)maxValue);
             g2d.drawLine(x, gridY, x + chartWidth, gridY);
 
             // Y-axis values
-            String value = String.valueOf((maxValue * (10 - i)) / 10);
+            String value = String.valueOf(i);
             g2d.setColor(Color.BLACK);
             g2d.drawString(value, x - 30, gridY + 5);
         }
 
+        // Colors for bars
+        Color[] colors = {
+                new Color(70, 130, 180), new Color(255, 99, 71),
+                new Color(154, 205, 50), new Color(255, 215, 0),
+                new Color(238, 130, 238)
+        };
+
         int barWidth = chartWidth / data.size();
         int i = 0;
 
+        // Draw bars
         for (Map.Entry<String, Long> entry : data.entrySet()) {
             int barHeight = (int) ((entry.getValue() * 1.0 / maxValue) * chartHeight);
 
-            // Gradient fill for bars
-            GradientPaint gradient = new GradientPaint(
-                    x + i * barWidth, y + chartHeight - barHeight,
-                    new Color(70, 130, 180),
-                    x + i * barWidth + barWidth - 10, y + chartHeight,
-                    new Color(30, 144, 255)
-            );
-            g2d.setPaint(gradient);
+            // Color for each bar
+            g2d.setColor(colors[i % colors.length]);
             g2d.fillRect(x + i * barWidth, y + chartHeight - barHeight, barWidth - 10, barHeight);
 
             // Label
@@ -79,3 +81,4 @@ public class StatusBarChartPanel extends JPanel {
         }
     }
 }
+
