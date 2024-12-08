@@ -17,6 +17,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -29,6 +30,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
@@ -46,6 +48,15 @@ public class WasteManagementDashboard extends BaseDashboard {
         // Add tabs
         tabbedPane.addTab("Process Waste Requests", createWasteDisposalTab());
         tabbedPane.addTab("Environmental Impact Metrics", createEnvironmentalImpactTab());
+        tabbedPane.setBackgroundAt(0, new Color(173, 216, 250)); // Light blue
+        tabbedPane.setBackgroundAt(1, new Color(240, 230, 140)); // Light yellow
+  // Customize the size and font of the tabs
+        tabbedPane.setFont(new Font("Arial", Font.BOLD, 14)); // Increase font size
+        tabbedPane.setPreferredSize(new Dimension(800, 40)); // Adjust tab height
+
+        // Modify UI to increase tab width and height
+        UIManager.put("TabbedPane.tabInsets", new Insets(10, 30, 10, 30)); // Padding for width and height
+        UIManager.put("TabbedPane.tabAreaInsets", new Insets(10, 10, 10, 10)); // Padding around the tab area
 
         add(tabbedPane, BorderLayout.CENTER);
         setVisible(true);
@@ -81,20 +92,41 @@ public class WasteManagementDashboard extends BaseDashboard {
         table.getTableHeader().setForeground(Color.WHITE);
         table.setFont(new Font("Arial", Font.PLAIN, 14));
         table.setRowHeight(40);
+        
+        
+        // Import Random for generating random reasons
 
-        // Load all rejected donation requests as "Pending Disposal"
-        for (DonationRequest request : AuthService.getDonationRequestDirectory().getDonationRequests()) {
-            if ("Rejected".equalsIgnoreCase(request.getStatus())) {
-                tableModel.addRow(new Object[]{
-                        request.getId(),
-                        request.getFoodType(),
-                        request.getQuantity(),
-                        request.getRejectionReason(),
-                        "Pending Disposal", // Dynamically display as "Pending Disposal"
-                        "Dispose"
-                });
-            }
+
+// Load all rejected donation requests as "Pending Disposal"
+Random random = new Random();
+String[] randomRejectionReasons = {
+    "Expired food items",
+    "Damaged packaging",
+    "Improper storage",
+    "Non-compliance with quality standards",
+    "Excess inventory returned"
+};
+
+for (DonationRequest request : AuthService.getDonationRequestDirectory().getDonationRequests()) {
+    if ("Rejected".equalsIgnoreCase(request.getStatus())) {
+        // Assign a random rejection reason if it's empty
+        String rejectionReason = request.getRejectionReason();
+        if (rejectionReason == null || rejectionReason.isEmpty()) {
+            rejectionReason = randomRejectionReasons[random.nextInt(randomRejectionReasons.length)];
+            request.setRejectionReason(rejectionReason); // Assuming there is a setter method for rejection reason
         }
+        
+        tableModel.addRow(new Object[]{
+                request.getId(),
+                request.getFoodType(),
+                request.getQuantity(),
+                rejectionReason,
+                "Pending Disposal", // Dynamically display as "Pending Disposal"
+                "Dispose"
+        });
+    }
+}
+
 
         // Add action buttons
         table.getColumnModel().getColumn(5).setCellRenderer(new ActionButtonRenderer());

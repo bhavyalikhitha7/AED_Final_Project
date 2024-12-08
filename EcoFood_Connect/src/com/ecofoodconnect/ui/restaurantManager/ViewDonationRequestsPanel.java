@@ -67,7 +67,14 @@ public class ViewDonationRequestsPanel {
         // Button Panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton editButton = createStyledButton("Edit Request", new Color(70, 130, 180));
+    
+        editButton.setForeground(Color.WHITE);
+editButton.setPreferredSize(new Dimension(100, 30)); 
+editButton.setBorder(null);
         JButton deleteButton = createStyledButton("Delete Request", Color.RED);
+            deleteButton.setPreferredSize(new Dimension(130, 30)); 
+            deleteButton.setBorder(null);
+            deleteButton.setForeground(Color.WHITE);
 
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
