@@ -49,6 +49,20 @@ public class RestaurantManagerDashboard extends BaseDashboard {
         
         DonationReportsPanel reportsPanel = new DonationReportsPanel(donationRequestDirectory);
         tabbedPane.addTab("Donation Reports", reportsPanel.createPanel());
+        
+        
+        // Set light colors for the tabs
+        tabbedPane.setBackgroundAt(0, new Color(173, 216, 250)); // Light blue
+        tabbedPane.setBackgroundAt(1, new Color(240, 230, 140)); // Light yellow
+        tabbedPane.setBackgroundAt(2, new Color(144, 238, 144)); // Light green
+        
+         // Customize the size and font of the tabs
+        tabbedPane.setFont(new Font("Arial", Font.BOLD, 14)); // Increase font size
+        tabbedPane.setPreferredSize(new Dimension(800, 40)); // Adjust tab height
+
+        // Modify UI to increase tab width and height
+        UIManager.put("TabbedPane.tabInsets", new Insets(10, 30, 10, 30)); // Padding for width and height
+        UIManager.put("TabbedPane.tabAreaInsets", new Insets(10, 10, 10, 10)); // Padding around the tab area
 
         // Add listener to reload data when switching to the "View Donation Requests" tab
         tabbedPane.addChangeListener(e -> {

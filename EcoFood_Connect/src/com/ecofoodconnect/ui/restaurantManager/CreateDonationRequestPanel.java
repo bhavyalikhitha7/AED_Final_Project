@@ -10,13 +10,18 @@ import com.ecofoodconnect.services.AuthService;
 import com.ecofoodconnect.utils.DateValidator;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.net.URL;
 import java.util.UUID;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -49,6 +54,22 @@ public class CreateDonationRequestPanel {
         headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
         headerLabel.setForeground(new Color(34, 139, 34));
         headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        // Image Panel
+        JPanel imagePanel = new JPanel();
+        imagePanel.setBackground(Color.WHITE);
+
+        ImageIcon logoIcon = null;
+        URL imageUrl = getClass().getResource("/images/logo.png");
+        if (imageUrl == null) {
+            System.err.println("Image not found! Ensure it is in 'src/images/logo.png'");
+        } else {
+            logoIcon = new ImageIcon(imageUrl);
+            Image scaledImage = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            logoIcon = new ImageIcon(scaledImage);
+        }
+
+        JLabel logoLabel = new JLabel(logoIcon);
+        imagePanel.add(logoLabel);
         panel.add(headerLabel, BorderLayout.NORTH);
 
         // Form Panel
@@ -96,16 +117,30 @@ public class CreateDonationRequestPanel {
         formPanel.add(notesLabel, gbc);
         gbc.gridx = 1;
         formPanel.add(notesScrollPane, gbc);
+        
+        // Combine Image and Form Panels
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS)); // Stack vertically
+        centerPanel.add(imagePanel);
+        centerPanel.add(formPanel);
+        
+        panel.add(centerPanel, BorderLayout.CENTER);
 
-        panel.add(formPanel, BorderLayout.CENTER);
+        
 
         // Buttons
         JButton submitButton = new JButton("Submit");
+        submitButton.setBackground( new Color(34, 139, 34));
+            submitButton.setForeground(Color.WHITE);
+            submitButton.setPreferredSize(new Dimension(100, 30)); 
+            submitButton.setBorder(null);
+       
         submitButton.addActionListener(e -> {
             String foodType = (String) foodTypeDropdown.getSelectedItem();
             String quantityStr = quantityField.getText();
             String expiryDate = expiryDateField.getText();
             String notes = notesField.getText();
+            
 
             if (foodType == null || quantityStr.isEmpty() || expiryDate.isEmpty() || notes.isEmpty()) {
                 JOptionPane.showMessageDialog(panel, "All fields are required.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -153,13 +188,19 @@ public class CreateDonationRequestPanel {
         });
         
         JButton resetButton = new JButton("Reset");
+         resetButton.setBackground(Color.RED);
+resetButton.setForeground(Color.WHITE);
+resetButton.setPreferredSize(new Dimension(100, 30));
+resetButton.setBorder(null);
         resetButton.addActionListener(e -> {
             foodTypeDropdown.setSelectedIndex(0);
             quantityField.setText("");
             expiryDateField.setText("MM/DD/YYYY");
             notesField.setText("");
         });
-
+Font buttonFont = new Font("Arial", Font.BOLD, 13); // Font: Arial, Bold, Size: 13
+submitButton.setFont(buttonFont);
+resetButton.setFont(buttonFont);
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(submitButton);
         buttonPanel.add(resetButton);
