@@ -15,9 +15,13 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.net.URL;
 import java.util.UUID;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -50,6 +54,22 @@ public class CreateDonationRequestPanel {
         headerLabel.setFont(new Font("Arial", Font.BOLD, 20));
         headerLabel.setForeground(new Color(34, 139, 34));
         headerLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        // Image Panel
+        JPanel imagePanel = new JPanel();
+        imagePanel.setBackground(Color.WHITE);
+
+        ImageIcon logoIcon = null;
+        URL imageUrl = getClass().getResource("/images/logo.png");
+        if (imageUrl == null) {
+            System.err.println("Image not found! Ensure it is in 'src/images/logo.png'");
+        } else {
+            logoIcon = new ImageIcon(imageUrl);
+            Image scaledImage = logoIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+            logoIcon = new ImageIcon(scaledImage);
+        }
+
+        JLabel logoLabel = new JLabel(logoIcon);
+        imagePanel.add(logoLabel);
         panel.add(headerLabel, BorderLayout.NORTH);
 
         // Form Panel
@@ -97,8 +117,16 @@ public class CreateDonationRequestPanel {
         formPanel.add(notesLabel, gbc);
         gbc.gridx = 1;
         formPanel.add(notesScrollPane, gbc);
+        
+        // Combine Image and Form Panels
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS)); // Stack vertically
+        centerPanel.add(imagePanel);
+        centerPanel.add(formPanel);
+        
+        panel.add(centerPanel, BorderLayout.CENTER);
 
-        panel.add(formPanel, BorderLayout.CENTER);
+        
 
         // Buttons
         JButton submitButton = new JButton("Submit");
