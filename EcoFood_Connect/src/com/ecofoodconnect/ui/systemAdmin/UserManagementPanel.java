@@ -7,6 +7,9 @@ package com.ecofoodconnect.ui.systemAdmin;
 import com.ecofoodconnect.models.Person;
 import com.ecofoodconnect.services.AuthService;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -39,11 +42,39 @@ public class UserManagementPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(userTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Buttons for CRUD operations
-        JPanel buttonPanel = new JPanel();
-        JButton addUserButton = new JButton("Add User");
-        JButton editUserButton = new JButton("Edit User");
-        JButton deleteUserButton = new JButton("Delete User");
+//        // Buttons for CRUD operations
+//        JPanel buttonPanel = new JPanel();
+//        JButton addUserButton = new JButton("Add User");
+//        JButton editUserButton = new JButton("Edit User");
+//        JButton deleteUserButton = new JButton("Delete User");
+    // Buttons for CRUD operations
+JPanel buttonPanel = new JPanel();
+
+JButton addUserButton = new JButton("Add User");
+addUserButton.setBackground( new Color(34, 139, 34));
+addUserButton.setForeground(Color.WHITE);
+addUserButton.setPreferredSize(new Dimension(100, 30)); 
+JButton editUserButton = new JButton("Edit User");
+editUserButton.setBackground(new Color(70, 130, 180));
+editUserButton.setForeground(Color.WHITE);
+editUserButton.setPreferredSize(new Dimension(100, 30)); 
+JButton deleteUserButton = new JButton("Delete User");
+deleteUserButton.setBackground(Color.RED);
+deleteUserButton.setForeground(Color.WHITE);
+deleteUserButton.setPreferredSize(new Dimension(100, 30)); 
+
+Font buttonFont = new Font("Arial", Font.BOLD, 13); // Font: Arial, Bold, Size: 13
+addUserButton.setFont(buttonFont);
+editUserButton.setFont(buttonFont);
+deleteUserButton.setFont(buttonFont);
+addUserButton.setBorder(null); // Remove border
+editUserButton.setBorder(null); // Remove border
+deleteUserButton.setBorder(null);
+
+// Add buttons to the panel
+buttonPanel.add(addUserButton);
+buttonPanel.add(editUserButton);
+buttonPanel.add(deleteUserButton);
 
         buttonPanel.add(addUserButton);
         buttonPanel.add(editUserButton);
