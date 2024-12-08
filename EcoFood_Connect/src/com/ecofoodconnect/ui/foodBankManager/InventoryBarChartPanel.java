@@ -9,9 +9,8 @@ import java.awt.*;
 import java.util.Map;
 /**
  *
- * @author tanmay
+ * @author Bhavya
  */
-
 public class InventoryBarChartPanel extends JPanel {
     private Map<String, Double> inventory;
 
@@ -44,6 +43,16 @@ public class InventoryBarChartPanel extends JPanel {
         g2d.drawLine(x, y, x, y + chartHeight); // Y-axis
         g2d.drawLine(x, y + chartHeight, x + chartWidth, y + chartHeight); // X-axis
 
+        // Define colors for the bars
+        Color[] colors = {
+            new Color(70, 130, 180),
+            new Color(255, 99, 71),
+            new Color(154, 205, 50),
+            new Color(255, 215, 0),
+            new Color(238, 130, 238),
+            new Color(244, 164, 96)
+        };
+
         // Calculate bar properties
         int barWidth = chartWidth / inventory.size();
         double maxQuantity = inventory.values().stream().mapToDouble(Double::doubleValue).max().orElse(1);
@@ -54,8 +63,8 @@ public class InventoryBarChartPanel extends JPanel {
             double quantity = entry.getValue();
             int barHeight = (int) ((quantity / maxQuantity) * chartHeight);
 
-            // Draw bar
-            g2d.setColor(new Color(70, 130, 180));
+            // Set color for each bar
+            g2d.setColor(colors[i % colors.length]); // Cycle through colors
             g2d.fillRect(x + i * barWidth + 10, y + chartHeight - barHeight, barWidth - 20, barHeight);
 
             // Label
