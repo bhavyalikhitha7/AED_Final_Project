@@ -14,7 +14,9 @@ import com.ecofoodconnect.ui.foodBankManager.ActionButtonRenderer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +30,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -46,6 +49,15 @@ public class FoodBankManagerDashboard extends BaseDashboard {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Donation Requests", createDonationRequestsTab());
         tabbedPane.addTab("Inventory Monitoring", createInventoryMonitoringTab());
+         tabbedPane.setBackgroundAt(0, new Color(173, 216, 250)); // Light blue
+        tabbedPane.setBackgroundAt(1, new Color(240, 230, 140)); // Light yellow
+  // Customize the size and font of the tabs
+        tabbedPane.setFont(new Font("Arial", Font.BOLD, 14)); // Increase font size
+        tabbedPane.setPreferredSize(new Dimension(800, 40)); // Adjust tab height
+
+        // Modify UI to increase tab width and height
+        UIManager.put("TabbedPane.tabInsets", new Insets(10, 30, 10, 30)); // Padding for width and height
+        UIManager.put("TabbedPane.tabAreaInsets", new Insets(10, 10, 10, 10)); // Padding around the tab area
 
         add(tabbedPane, BorderLayout.CENTER);
         setVisible(true);
