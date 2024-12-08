@@ -101,11 +101,17 @@ public class CreateDonationRequestPanel {
 
         // Buttons
         JButton submitButton = new JButton("Submit");
+        submitButton.setBackground(new Color(34, 139, 34)); // Forest Green color
+        submitButton.setOpaque(true); // Ensure it's opaque
+        submitButton.setContentAreaFilled(false); // Optional
+        submitButton.setForeground(Color.WHITE); 
+        
         submitButton.addActionListener(e -> {
             String foodType = (String) foodTypeDropdown.getSelectedItem();
             String quantityStr = quantityField.getText();
             String expiryDate = expiryDateField.getText();
             String notes = notesField.getText();
+            
 
             if (foodType == null || quantityStr.isEmpty() || expiryDate.isEmpty() || notes.isEmpty()) {
                 JOptionPane.showMessageDialog(panel, "All fields are required.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -153,6 +159,11 @@ public class CreateDonationRequestPanel {
         });
         
         JButton resetButton = new JButton("Reset");
+         resetButton.setBackground(Color.RED);
+         resetButton.setBackground(new Color(34, 139, 34)); // Forest Green color
+        resetButton.setOpaque(true); // Ensure it's opaque
+       resetButton.setContentAreaFilled(false); // Optional
+        resetButton.setForeground(Color.WHITE); 
         resetButton.addActionListener(e -> {
             foodTypeDropdown.setSelectedIndex(0);
             quantityField.setText("");
