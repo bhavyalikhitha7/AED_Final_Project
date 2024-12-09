@@ -1,4 +1,4 @@
-# 🚀EcoFood Connect
+# 🚀 EcoFood Connect
 
 ## 📘 **Project Overview**
 EcoFood Connect is a **Java Swing-based software platform** designed to tackle the issue of food wastage and hunger in the United States. With over **133 billion pounds of food wasted annually**, the platform aims to streamline the process of donating surplus food from restaurants to food banks, managing the logistics of food donations, and ensuring the sustainable disposal of non-edible food waste.
