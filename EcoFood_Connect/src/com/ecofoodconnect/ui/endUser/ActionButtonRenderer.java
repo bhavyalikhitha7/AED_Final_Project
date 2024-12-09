@@ -22,8 +22,8 @@ public class ActionButtonRenderer extends JButton implements TableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         setText((value == null) ? "" : value.toString());
-        setBackground(isSelected ? Color.CYAN : new Color(70, 130, 180));
-        setForeground(Color.WHITE);
+    setBackground(new Color(0, 0, 255)); // Blue color
+      setForeground(Color.BLACK); // Set text color to white
         return this;
     }
 }
