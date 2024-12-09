@@ -75,8 +75,12 @@ public class QualityMetricsPanel {
             }
         }
 
+//        JScrollPane scrollPane = new JScrollPane(table);
+//        contentPanel.add(scrollPane, BorderLayout.NORTH);
         JScrollPane scrollPane = new JScrollPane(table);
-        contentPanel.add(scrollPane, BorderLayout.NORTH);
+scrollPane.setPreferredSize(new Dimension(scrollPane.getPreferredSize().width, 270)); // Set desired height
+contentPanel.add(scrollPane, BorderLayout.NORTH);
+
 
         // Metrics Form
         JPanel formPanel = new JPanel(new GridBagLayout());
